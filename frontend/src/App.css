@@ -1,34 +1,167 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* Additional app-specific styles */
+
+/* Layout */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
+.main-content {
+    flex: 1;
+    margin-left: 16rem;
+    padding: 2rem;
+    transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 1024px) {
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
     }
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+/* Hero section */
+.hero-gradient {
+    background: radial-gradient(ellipse at top, hsl(142 76% 55% / 0.1) 0%, transparent 50%);
 }
 
-.App-link {
-    color: #61dafb;
+/* Stats cards */
+.stat-card {
+    @apply bg-card/40 backdrop-blur-md border border-white/5 rounded-xl p-4;
 }
 
-@keyframes App-logo-spin {
+/* QR Preview */
+.qr-preview {
+    @apply bg-white rounded-xl p-4 inline-block;
+}
+
+/* Color picker wrapper */
+.color-picker-wrapper {
+    @apply relative;
+}
+
+.color-picker-wrapper input[type="color"] {
+    @apply w-12 h-12 rounded-lg cursor-pointer border-2 border-white/10;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.color-picker-wrapper input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.color-picker-wrapper input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+/* Table styling */
+.data-table {
+    @apply w-full border-collapse;
+}
+
+.data-table th {
+    @apply text-left text-muted-foreground text-sm font-medium px-4 py-3 border-b border-white/5;
+}
+
+.data-table td {
+    @apply px-4 py-3 border-b border-white/5;
+}
+
+.data-table tr:hover td {
+    @apply bg-white/5;
+}
+
+/* File list item */
+.file-item {
+    @apply flex items-center justify-between p-3 bg-muted/30 rounded-lg;
+}
+
+.file-item.success {
+    @apply border-l-4 border-primary;
+}
+
+.file-item.error {
+    @apply border-l-4 border-destructive;
+}
+
+/* Textarea styling */
+.code-textarea {
+    @apply bg-black/30 border-white/10 font-mono text-sm resize-none;
+    min-height: 300px;
+}
+
+/* Password display */
+.password-display {
+    @apply bg-black/50 rounded-xl p-6 font-mono text-2xl text-center break-all select-all;
+    letter-spacing: 0.1em;
+}
+
+/* Strength meter */
+.strength-meter {
+    @apply h-2 rounded-full overflow-hidden bg-muted;
+}
+
+.strength-meter-fill {
+    @apply h-full transition-all duration-300;
+}
+
+/* Stats panel */
+.stats-panel {
+    @apply grid grid-cols-2 gap-4;
+}
+
+.stats-panel .stat {
+    @apply bg-card/40 backdrop-blur-md border border-white/5 rounded-xl p-4 text-center;
+}
+
+.stats-panel .stat-value {
+    @apply text-3xl font-bold text-primary;
+}
+
+.stats-panel .stat-label {
+    @apply text-sm text-muted-foreground mt-1;
+}
+
+/* Tab styling overrides */
+.tabs-bio-digital [data-state="active"] {
+    @apply bg-primary text-primary-foreground;
+}
+
+/* Animation utilities */
+.animate-in {
+    animation: animateIn 0.3s ease-out forwards;
+}
+
+@keyframes animateIn {
     from {
-        transform: rotate(0deg);
+        opacity: 0;
+        transform: translateY(10px);
     }
     to {
-        transform: rotate(360deg);
+        opacity: 1;
+        transform: translateY(0);
     }
+}
+
+/* Shortlink URL display */
+.shortlink-url {
+    @apply bg-primary/10 text-primary px-3 py-1 rounded-lg font-mono text-sm;
+}
+
+/* Mobile bottom nav */
+.mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-white/10 p-2 z-50 lg:hidden;
+}
+
+.mobile-nav-items {
+    @apply flex justify-around;
+}
+
+.mobile-nav-item {
+    @apply flex flex-col items-center gap-1 p-2 rounded-lg text-muted-foreground transition-colors;
+}
+
+.mobile-nav-item.active {
+    @apply text-primary;
 }
