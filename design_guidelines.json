@@ -1,0 +1,183 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "E1 Utility Suite",
+      "vibe": "Bio-Digital Noir",
+      "description": "A high-performance utility dashboard that feels like a cyberpunk command center. Deep, organic dark backgrounds pierced by bioluminescent accents.",
+      "emotion": "Precision, Power, Mystery",
+      "radius": "0.75rem"
+    },
+    "typography": {
+      "font_family_heading": "Outfit, sans-serif",
+      "font_family_body": "Inter, sans-serif",
+      "font_family_code": "JetBrains Mono, monospace",
+      "scale": {
+        "h1": "text-4xl md:text-6xl font-bold tracking-tight",
+        "h2": "text-3xl md:text-4xl font-semibold tracking-tight",
+        "h3": "text-2xl font-semibold",
+        "body": "text-base leading-relaxed",
+        "small": "text-sm text-muted-foreground",
+        "code": "font-mono text-sm bg-black/50 p-1 rounded"
+      }
+    },
+    "colors": {
+      "palette": {
+        "background": "hsl(240 10% 4%)",
+        "foreground": "hsl(0 0% 98%)",
+        "card": "hsl(240 10% 6%)",
+        "card_foreground": "hsl(0 0% 98%)",
+        "popover": "hsl(240 10% 5%)",
+        "popover_foreground": "hsl(0 0% 98%)",
+        "primary": "hsl(142 76% 55%)",
+        "primary_foreground": "hsl(240 10% 4%)",
+        "secondary": "hsl(262 80% 65%)",
+        "secondary_foreground": "hsl(0 0% 98%)",
+        "muted": "hsl(240 5% 15%)",
+        "muted_foreground": "hsl(240 5% 65%)",
+        "accent": "hsl(190 90% 60%)",
+        "accent_foreground": "hsl(240 10% 4%)",
+        "destructive": "hsl(0 84% 60%)",
+        "destructive_foreground": "hsl(0 0% 98%)",
+        "border": "hsl(240 5% 15%)",
+        "input": "hsl(240 5% 15%)",
+        "ring": "hsl(142 76% 55%)"
+      },
+      "gradients": {
+        "primary_glow": "linear-gradient(135deg, hsl(142 76% 55%), hsl(190 90% 60%))",
+        "card_hover": "linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%)",
+        "glass": "rgba(10, 10, 12, 0.7)"
+      },
+      "surprising_elements": {
+        "action_highlight": "#CCFF00 (Acid Lime)",
+        "data_visualization": "#BF5AF2 (Electric Purple)",
+        "active_state": "#00F0FF (Cyan)"
+      }
+    },
+    "spacing": {
+      "container_padding": "p-6 md:p-12",
+      "section_gap": "gap-8",
+      "item_gap": "gap-4"
+    },
+    "shadows": {
+      "glow": "0 0 20px -5px hsl(142 76% 55% / 0.3)",
+      "card": "0 8px 30px rgba(0,0,0,0.5)"
+    },
+    "borders": {
+      "default": "1px solid hsl(240 5% 15%)",
+      "active": "1px solid hsl(142 76% 55%)",
+      "glass": "1px solid rgba(255,255,255,0.08)"
+    }
+  },
+  "layout_strategies": {
+    "dashboard_grid": {
+      "type": "Bento Grid",
+      "classes": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6",
+      "item_classes": "relative overflow-hidden rounded-xl border border-white/10 bg-card/50 p-6 backdrop-blur-xl transition-all hover:border-primary/50 hover:shadow-[0_0_30px_-10px_hsl(var(--primary)/0.3)] group"
+    },
+    "app_shell": {
+      "structure": "Sidebar (collapsible) + Main Content Area",
+      "sidebar_width": "w-64",
+      "sidebar_collapsed_width": "w-16",
+      "mobile_nav": "Bottom Sheet or Hamburger Menu"
+    },
+    "page_layouts": {
+      "split_screen": "grid lg:grid-cols-2 gap-8 h-full",
+      "centered_tool": "max-w-3xl mx-auto flex flex-col gap-8"
+    }
+  },
+  "components": {
+    "Button": {
+      "variants": {
+        "default": "bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_15px_-3px_hsl(var(--primary)/0.4)] font-bold tracking-wide rounded-lg",
+        "secondary": "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        "ghost": "hover:bg-accent hover:text-accent-foreground",
+        "outline": "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-accent"
+      },
+      "defaultProps": {
+        "size": "default"
+      }
+    },
+    "Card": {
+      "styles": "bg-card/40 backdrop-blur-md border border-white/5 shadow-xl rounded-xl overflow-hidden",
+      "header_styles": "p-6 pb-2",
+      "content_styles": "p-6 pt-2"
+    },
+    "Input": {
+      "styles": "bg-black/20 border-white/10 focus-visible:ring-primary focus-visible:border-primary/50 h-12 text-lg"
+    },
+    "Badge": {
+      "styles": "bg-primary/10 text-primary border-primary/20 hover:bg-primary/20 transition-colors"
+    },
+    "Sidebar": {
+      "styles": "h-screen border-r border-white/5 bg-card/30 backdrop-blur-xl fixed left-0 top-0 z-40"
+    }
+  },
+  "motion": {
+    "reduced_motion": "respect-preference",
+    "page_transition": {
+      "initial": { "opacity": 0, "y": 20 },
+      "animate": { "opacity": 1, "y": 0 },
+      "exit": { "opacity": 0, "y": -20 },
+      "transition": { "duration": 0.3, "ease": "easeOut" }
+    },
+    "hover_effects": {
+      "card_lift": "hover:-translate-y-1 transition-transform duration-300",
+      "glow_pulse": "animate-pulse"
+    }
+  },
+  "pages": {
+    "Home": {
+      "layout": "dashboard_grid",
+      "elements": [
+        { "name": "Hero Section", "description": "Welcome message with quick stats or search bar" },
+        { "name": "Utility Cards", "description": "Grid of all available tools with icons and short descriptions" }
+      ]
+    },
+    "QR_Generator": {
+      "layout": "split_screen",
+      "features": ["Color Picker (Foreground/Background)", "Content Type Tabs (URL, Text, Wifi)", "Live Preview", "Download Options (PNG, SVG)"]
+    },
+    "Shortlinks": {
+      "layout": "centered_tool",
+      "features": ["Input field with 'Shorten' button", "History Table (Original, Short, Clicks, Date)", "Copy to Clipboard action"]
+    },
+    "Image_Converter": {
+      "layout": "centered_tool",
+      "features": ["Drag & Drop Zone (dashed border, glowing on hover)", "Batch List", "Conversion Progress", "Download All button"]
+    },
+    "Text_to_HTML": {
+      "layout": "split_screen",
+      "features": ["Markdown/Text Input (Monaco style)", "HTML Output (Read only)", "Copy Code button", "Live Preview Toggle"]
+    },
+    "Password_Generator": {
+      "layout": "centered_tool",
+      "features": ["Huge Password Display", "Length Slider", "Character Type Toggles (Uppercase, Symbols, Numbers)", "Strength Indicator Meter"]
+    },
+    "Word_Counter": {
+      "layout": "split_screen",
+      "features": ["Large Text Area", "Floating Stats Panel (Words, Chars, Sentences, Reading Time)"]
+    },
+    "Base64": {
+      "layout": "centered_tool",
+      "features": ["Encoder/Decoder Tabs", "Input Text Area", "Output Result", "Copy/Clear Actions"]
+    }
+  },
+  "assets": {
+    "icons": "lucide-react",
+    "icon_style": "stroke-width: 1.5px; size: 24px",
+    "logo_strategy": "Text-based with a colored accent dot or simple geometric shape (Square/Circle/Triangle)"
+  },
+  "universal_guidelines": [
+    "Always use 'Outfit' font for headings and 'Inter' for body.",
+    "Ensure high contrast for text (WCAG AA).",
+    "Use 'lucide-react' for all icons.",
+    "Implement a responsive sidebar for navigation.",
+    "Add a 'data-testid' to all interactive elements.",
+    "Do NOT use gradients for text, only for backgrounds or borders.",
+    "Use 'sonner' for toast notifications.",
+    "Cards must have a subtle glassmorphism effect.",
+    "Primary actions must use the Neon Green or Electric Blue accent.",
+    "Inputs must be large and accessible (min height 44px)."
+  ],
+  "instructions_to_main_agent": "Focus on the 'Bio-Digital' aesthetic. Think 'Hacker UI' meets 'Apple Design'. Clean, sharp, but with electric soul. Use the provided color palette strictly. Override Shadcn defaults to match this dark theme. For the charts/stats, use simple custom CSS or minimal Recharts if absolutely necessary."
+}
