@@ -432,8 +432,9 @@ def main():
     tests = [
         ("API Root", tester.test_api_root),
         ("Status Endpoints", tester.test_status_endpoints),
-        ("QR Generator", tester.test_qr_generator),
-        ("Shortlinks", tester.test_shortlinks),
+        ("QR Generator (Batch + is.gd)", tester.test_qr_generator),
+        ("Shortlinks (Batch + is.gd)", tester.test_shortlinks),
+        ("Image Converter (WebP 75%)", tester.test_image_converter),
         ("Text to HTML", tester.test_text_to_html),
         ("Password Generator", tester.test_password_generator),
         ("Word Counter", tester.test_word_counter),
