@@ -183,48 +183,71 @@ async def get_status_checks():
 # ============== QR CODE ==============
 
 @api_router.post("/qr/generate", response_model=QRCodeResponse)
-async def generate_qr_code(request: QRCodeRequest):
-    try:
-        # Prepare content based on type
-        content = request.content
-        if request.content_type == "email":
-            content = f"mailto:{request.content}"
-        elif request.content_type == "phone":
-            content = f"tel:{request.content}"
-        elif request.content_type == "wifi":
-            # Expected format: SSID,password,encryption(WPA/WEP/nopass)
-            parts = request.content.split(",")
-            if len(parts) >= 2:
-                ssid = parts[0]
-                password = parts[1] if len(parts) > 1 else ""
-                encryption = parts[2] if len(parts) > 2 else "WPA"
-                content = f"WIFI:T:{encryption};S:{ssid};P:{password};;"
-        
-        # Generate QR code
-        qr = qrcode.QRCode(
-            version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_H,
-            box_size=10,
-            border=4,
-        )
-        qr.add_data(content)
-        qr.make(fit=True)
-        
-        # Create image with colors
-        img = qr.make_image(fill_color=request.fg_color, back_color=request.bg_color)
-        
-        # Resize to requested size
-        img = img.resize((request.size, request.size), Image.Resampling.LANCZOS)
-        
-        # Convert to base64
-        buffer = io.BytesIO()
-        img.save(buffer, format='PNG')
-        buffer.seek(0)
-        img_base64 = base64.b64encode(buffer.getvalue()).decode()
-        
-        return QRCodeResponse(image_base64=img_base64, content=content)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+async def generate_qr_codes(request: QRCodeRequest):
+    results = []
+    
+    for item in request.items:
+        try:
+            # Prepare content based on type
+            content = item.content
+            final_content = content
+            
+            if item.content_type == "email":
+                final_content = f"mailto:{content}"
+            elif item.content_type == "phone":
+                final_content = f"tel:{content}"
+            elif item.content_type == "wifi":
+                # Expected format: SSID,password,encryption(WPA/WEP/nopass)
+                parts = content.split(",")
+                if len(parts) >= 2:
+                    ssid = parts[0]
+                    password = parts[1] if len(parts) > 1 else ""
+                    encryption = parts[2] if len(parts) > 2 else "WPA"
+                    final_content = f"WIFI:T:{encryption};S:{ssid};P:{password};;"
+            elif item.content_type == "url" and request.use_isgd:
+                # Shorten URL with is.gd first
+                isgd_result = await shorten_with_isgd(content)
+                if isgd_result["success"]:
+                    final_content = isgd_result["short_url"]
+            
+            # Generate QR code
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_H,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(final_content)
+            qr.make(fit=True)
+            
+            # Create image with colors
+            img = qr.make_image(fill_color=request.fg_color, back_color=request.bg_color)
+            
+            # Resize to requested size
+            img = img.resize((request.size, request.size), Image.Resampling.LANCZOS)
+            
+            # Convert to base64
+            buffer = io.BytesIO()
+            img.save(buffer, format='PNG')
+            buffer.seek(0)
+            img_base64 = base64.b64encode(buffer.getvalue()).decode()
+            
+            results.append(QRCodeResultItem(
+                original_content=content,
+                final_content=final_content,
+                image_base64=img_base64,
+                success=True
+            ))
+        except Exception as e:
+            results.append(QRCodeResultItem(
+                original_content=item.content,
+                final_content="",
+                image_base64="",
+                success=False,
+                error=str(e)
+            ))
+    
+    return QRCodeResponse(results=results)
 
 # ============== SHORTLINKS ==============
 
