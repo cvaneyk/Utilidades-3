@@ -20,8 +20,29 @@ import shortuuid
 import string
 import secrets
 import re
+import httpx
 
 ROOT_DIR = Path(__file__).parent
+
+# is.gd API helper
+async def shorten_with_isgd(url: str) -> dict:
+    """Shorten URL using is.gd API"""
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                "https://is.gd/create.php",
+                params={"format": "json", "url": url},
+                timeout=10.0
+            )
+            if response.status_code == 200:
+                data = response.json()
+                if "shorturl" in data:
+                    return {"success": True, "short_url": data["shorturl"]}
+                else:
+                    return {"success": False, "error": data.get("errormessage", "Unknown error")}
+            return {"success": False, "error": f"HTTP {response.status_code}"}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
 load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
