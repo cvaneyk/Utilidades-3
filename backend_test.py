@@ -89,49 +89,66 @@ class E1UtilitySuiteTester:
         return success
 
     def test_qr_generator(self):
-        """Test QR code generation"""
-        # URL QR Code
+        """Test QR code batch generation with is.gd integration"""
+        # Test single QR code (backward compatibility)
         success1, response1 = self.run_test(
-            "Generate URL QR Code",
+            "Generate Single QR Code",
             "POST",
             "qr/generate",
             200,
             data={
-                "content": "https://example.com",
-                "content_type": "url",
+                "items": [{"content": "https://example.com", "content_type": "url"}],
                 "fg_color": "#22c55e",
                 "bg_color": "#0a0a0c",
-                "size": 256
+                "size": 256,
+                "use_isgd": True
             }
         )
         
-        # Email QR Code
+        # Test batch QR generation with multiple types
         success2, response2 = self.run_test(
-            "Generate Email QR Code",
+            "Generate Batch QR Codes",
             "POST",
             "qr/generate",
             200,
             data={
-                "content": "test@example.com",
-                "content_type": "email",
+                "items": [
+                    {"content": "https://www.google.com", "content_type": "url"},
+                    {"content": "test@example.com", "content_type": "email"},
+                    {"content": "TestWiFi,password123,WPA", "content_type": "wifi"},
+                    {"content": "Hello World!", "content_type": "text"}
+                ],
                 "fg_color": "#000000",
                 "bg_color": "#FFFFFF",
-                "size": 200
+                "size": 300,
+                "use_isgd": True
             }
         )
         
-        # WiFi QR Code
+        # Verify response structure for batch
+        if success2 and response2:
+            if 'results' not in response2:
+                print("❌ Missing 'results' array in batch QR response")
+                return False
+            if len(response2['results']) != 4:
+                print(f"❌ Expected 4 results, got {len(response2['results'])}")
+                return False
+            # Check if at least one result has success=True
+            successful_results = [r for r in response2['results'] if r.get('success')]
+            if not successful_results:
+                print("❌ No successful QR code generation in batch")
+                return False
+            print(f"✅ Batch QR: {len(successful_results)}/4 successful")
+        
+        # Test is.gd integration OFF
         success3, response3 = self.run_test(
-            "Generate WiFi QR Code",
+            "Generate QR without is.gd",
             "POST",
             "qr/generate",
             200,
             data={
-                "content": "TestNetwork,password123,WPA",
-                "content_type": "wifi",
-                "fg_color": "#FF0000",
-                "bg_color": "#FFFFFF",
-                "size": 300
+                "items": [{"content": "https://example.com", "content_type": "url"}],
+                "use_isgd": False
             }
         )
         
