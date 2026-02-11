@@ -10,10 +10,15 @@ import {
   Home,
   Zap,
   Menu,
-  X
+  X,
+  Braces,
+  Regex,
+  Text,
+  Code
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const navItems = [
   { path: "/", icon: Home, label: "Dashboard" },
@@ -24,11 +29,14 @@ const navItems = [
   { path: "/password-generator", icon: Key, label: "Password Gen" },
   { path: "/word-counter", icon: Type, label: "Word Counter" },
   { path: "/base64", icon: Binary, label: "Base64" },
+  { path: "/json-formatter", icon: Braces, label: "JSON Formatter" },
+  { path: "/regex-tester", icon: Regex, label: "Regex Tester" },
+  { path: "/lorem-generator", icon: Text, label: "Lorem Ipsum" },
+  { path: "/code-minifier", icon: Code, label: "Code Minifier" },
 ];
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const location = useLocation();
 
   return (
     <div className="app-layout min-h-screen bg-background">
@@ -46,25 +54,27 @@ export default function Layout() {
           </NavLink>
         </div>
         
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              data-testid={`nav-${item.path.replace("/", "") || "home"}`}
-              className={({ isActive }) =>
-                `sidebar-link ${isActive ? "active" : ""}`
-              }
-            >
-              <item.icon className="w-5 h-5" />
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
-        </nav>
+        <ScrollArea className="flex-1">
+          <nav className="p-4 space-y-1">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                data-testid={`nav-${item.path.replace("/", "") || "home"}`}
+                className={({ isActive }) =>
+                  `sidebar-link ${isActive ? "active" : ""}`
+                }
+              >
+                <item.icon className="w-5 h-5" />
+                <span>{item.label}</span>
+              </NavLink>
+            ))}
+          </nav>
+        </ScrollArea>
         
         <div className="p-4 border-t border-white/5">
           <div className="text-xs text-muted-foreground text-center">
-            Built with precision
+            11 herramientas disponibles
           </div>
         </div>
       </aside>
@@ -115,21 +125,23 @@ export default function Layout() {
           </div>
         </div>
         
-        <nav className="p-4 space-y-1">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              onClick={() => setSidebarOpen(false)}
-              className={({ isActive }) =>
-                `sidebar-link ${isActive ? "active" : ""}`
-              }
-            >
-              <item.icon className="w-5 h-5" />
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
-        </nav>
+        <ScrollArea className="h-[calc(100vh-88px)]">
+          <nav className="p-4 space-y-1">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                onClick={() => setSidebarOpen(false)}
+                className={({ isActive }) =>
+                  `sidebar-link ${isActive ? "active" : ""}`
+                }
+              >
+                <item.icon className="w-5 h-5" />
+                <span>{item.label}</span>
+              </NavLink>
+            ))}
+          </nav>
+        </ScrollArea>
       </aside>
 
       {/* Main Content */}

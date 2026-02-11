@@ -10,6 +10,10 @@ import TextToHTML from "@/pages/TextToHTML";
 import PasswordGenerator from "@/pages/PasswordGenerator";
 import WordCounter from "@/pages/WordCounter";
 import Base64Tool from "@/pages/Base64Tool";
+import JsonFormatter from "@/pages/JsonFormatter";
+import RegexTester from "@/pages/RegexTester";
+import LoremGenerator from "@/pages/LoremGenerator";
+import CodeMinifier from "@/pages/CodeMinifier";
 
 function App() {
   return (
@@ -25,6 +29,10 @@ function App() {
             <Route path="password-generator" element={<PasswordGenerator />} />
             <Route path="word-counter" element={<WordCounter />} />
             <Route path="base64" element={<Base64Tool />} />
+            <Route path="json-formatter" element={<JsonFormatter />} />
+            <Route path="regex-tester" element={<RegexTester />} />
+            <Route path="lorem-generator" element={<LoremGenerator />} />
+            <Route path="code-minifier" element={<CodeMinifier />} />
           </Route>
         </Routes>
       </BrowserRouter>
