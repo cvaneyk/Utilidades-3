@@ -47,27 +47,49 @@ class StatusCheckCreate(BaseModel):
     client_name: str
 
 # QR Code Models
-class QRCodeRequest(BaseModel):
+class QRCodeItem(BaseModel):
     content: str
     content_type: str = "url"  # url, text, email, phone, wifi
+
+class QRCodeRequest(BaseModel):
+    items: List[QRCodeItem]  # Support multiple QR codes
     fg_color: str = "#000000"
     bg_color: str = "#FFFFFF"
     size: int = 300
+    use_isgd: bool = True  # Use is.gd for URL shortening
+
+class QRCodeResultItem(BaseModel):
+    original_content: str
+    final_content: str
+    image_base64: str
+    success: bool
+    error: Optional[str] = None
 
 class QRCodeResponse(BaseModel):
-    image_base64: str
-    content: str
+    results: List[QRCodeResultItem]
 
 # Shortlink Models
 class ShortlinkCreate(BaseModel):
+    urls: List[str]  # Support multiple URLs
+    use_isgd: bool = True  # Use is.gd API
+
+class ShortlinkItem(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
     original_url: str
-    custom_slug: Optional[str] = None
+    short_url: str
+    short_code: str
+    provider: str  # "isgd" or "local"
+    clicks: int = 0
+    created_at: str
 
 class Shortlink(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str
     original_url: str
     short_code: str
+    short_url: Optional[str] = None
+    provider: str = "local"
     clicks: int = 0
     created_at: str
 
@@ -282,9 +304,9 @@ async def convert_images_to_webp(files: List[UploadFile] = File(...)):
             elif image.mode != 'RGB':
                 image = image.convert('RGB')
             
-            # Save as WebP
+            # Save as WebP with 75% quality for smaller files
             buffer = io.BytesIO()
-            image.save(buffer, format='WEBP', quality=85)
+            image.save(buffer, format='WEBP', quality=75)
             buffer.seek(0)
             
             # Convert to base64
