@@ -155,49 +155,89 @@ class E1UtilitySuiteTester:
         return success1 and success2 and success3
 
     def test_shortlinks(self):
-        """Test shortlink functionality"""
-        # Create shortlink
+        """Test shortlink batch functionality with is.gd integration"""
+        # Test single shortlink creation with is.gd
         success1, response1 = self.run_test(
-            "Create Shortlink",
+            "Create Single Shortlink with is.gd",
             "POST",
             "shortlinks/create",
             200,
             data={
-                "original_url": "https://www.example.com/very/long/url/path",
-                "custom_slug": None
+                "urls": ["https://www.example.com/very/long/url/path"],
+                "use_isgd": True
             }
         )
         
-        shortlink_id = None
-        short_code = None
-        if success1 and response1:
-            shortlink_id = response1.get('id')
-            short_code = response1.get('short_code')
+        # Test batch shortlink creation
+        success2, response2 = self.run_test(
+            "Create Batch Shortlinks",
+            "POST",
+            "shortlinks/create",
+            200,
+            data={
+                "urls": [
+                    "https://www.google.com",
+                    "https://www.github.com/example/repo",
+                    "https://stackoverflow.com/questions/example"
+                ],
+                "use_isgd": True
+            }
+        )
+        
+        # Verify batch response structure
+        shortlinks_to_cleanup = []
+        if success2 and response2:
+            if 'results' not in response2:
+                print("❌ Missing 'results' array in batch shortlink response")
+                return False
+            if 'success_count' not in response2:
+                print("❌ Missing 'success_count' in batch shortlink response")
+                return False
+            print(f"✅ Batch shortlinks: {response2['success_count']} successful, {response2.get('error_count', 0)} errors")
+            # Store for cleanup
+            shortlinks_to_cleanup = [s['id'] for s in response2['results'] if 'id' in s]
+        
+        # Test local shortlinks (without is.gd)
+        success3, response3 = self.run_test(
+            "Create Local Shortlinks",
+            "POST",
+            "shortlinks/create",
+            200,
+            data={
+                "urls": ["https://www.example.org"],
+                "use_isgd": False
+            }
+        )
+        
+        if success3 and response3:
+            shortlinks_to_cleanup.extend([s['id'] for s in response3['results'] if 'id' in s])
         
         # Get all shortlinks
-        success2, response2 = self.run_test("Get Shortlinks", "GET", "shortlinks", 200)
+        success4, response4 = self.run_test("Get All Shortlinks", "GET", "shortlinks", 200)
         
-        # Test redirect (if we have a short code)
-        success3 = True
-        if short_code:
-            success3, response3 = self.run_test(
-                "Redirect Shortlink",
-                "GET",
-                f"shortlinks/{short_code}",
-                200
-            )
+        # Test redirect with first shortlink (if available)
+        success5 = True
+        if success4 and response4 and len(response4) > 0:
+            first_shortlink = response4[0]
+            if 'short_code' in first_shortlink:
+                success5, response5 = self.run_test(
+                    "Test Shortlink Redirect",
+                    "GET",
+                    f"shortlinks/{first_shortlink['short_code']}",
+                    200
+                )
         
-        # Delete shortlink (if we have an ID)
-        success4 = True
-        if shortlink_id:
-            success4, response4 = self.run_test(
-                "Delete Shortlink",
+        # Cleanup created shortlinks
+        cleanup_success = True
+        for shortlink_id in shortlinks_to_cleanup:
+            cleanup_success &= self.run_test(
+                f"Cleanup Shortlink {shortlink_id[:8]}",
                 "DELETE",
                 f"shortlinks/{shortlink_id}",
                 200
-            )
+            )[0]
         
-        return success1 and success2 and success3 and success4
+        return success1 and success2 and success3 and success4 and success5 and cleanup_success
 
     def test_text_to_html(self):
         """Test text to HTML conversion"""
