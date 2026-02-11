@@ -251,42 +251,83 @@ async def generate_qr_codes(request: QRCodeRequest):
 
 # ============== SHORTLINKS ==============
 
-@api_router.post("/shortlinks/create", response_model=Shortlink)
-async def create_shortlink(request: ShortlinkCreate):
-    try:
-        # Generate or use custom slug
-        if request.custom_slug:
-            short_code = request.custom_slug
-            # Check if custom slug already exists
-            existing = await db.shortlinks.find_one({"short_code": short_code})
-            if existing:
-                raise HTTPException(status_code=400, detail="Custom slug already in use")
-        else:
-            short_code = shortuuid.uuid()[:7]
-        
-        # Create shortlink document
-        shortlink_id = str(uuid.uuid4())
-        shortlink_doc = {
-            "id": shortlink_id,
-            "original_url": request.original_url,
-            "short_code": short_code,
-            "clicks": 0,
-            "created_at": datetime.now(timezone.utc).isoformat()
-        }
-        
-        await db.shortlinks.insert_one(shortlink_doc)
-        
-        return Shortlink(
-            id=shortlink_id,
-            original_url=request.original_url,
-            short_code=short_code,
-            clicks=0,
-            created_at=shortlink_doc["created_at"]
-        )
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+class ShortlinkCreateResponse(BaseModel):
+    results: List[Shortlink]
+    success_count: int
+    error_count: int
+
+@api_router.post("/shortlinks/create", response_model=ShortlinkCreateResponse)
+async def create_shortlinks(request: ShortlinkCreate):
+    results = []
+    success_count = 0
+    error_count = 0
+    
+    for url in request.urls:
+        try:
+            # Validate URL
+            try:
+                from urllib.parse import urlparse
+                parsed = urlparse(url)
+                if not parsed.scheme or not parsed.netloc:
+                    raise ValueError("Invalid URL")
+            except:
+                error_count += 1
+                continue
+            
+            shortlink_id = str(uuid.uuid4())
+            created_at = datetime.now(timezone.utc).isoformat()
+            
+            if request.use_isgd:
+                # Use is.gd API
+                isgd_result = await shorten_with_isgd(url)
+                if isgd_result["success"]:
+                    short_url = isgd_result["short_url"]
+                    short_code = short_url.split("/")[-1]
+                    provider = "isgd"
+                else:
+                    # Fallback to local
+                    short_code = shortuuid.uuid()[:7]
+                    short_url = None
+                    provider = "local"
+            else:
+                # Local shortlink
+                short_code = shortuuid.uuid()[:7]
+                short_url = None
+                provider = "local"
+            
+            # Save to database
+            shortlink_doc = {
+                "id": shortlink_id,
+                "original_url": url,
+                "short_code": short_code,
+                "short_url": short_url,
+                "provider": provider,
+                "clicks": 0,
+                "created_at": created_at
+            }
+            
+            await db.shortlinks.insert_one(shortlink_doc)
+            
+            results.append(Shortlink(
+                id=shortlink_id,
+                original_url=url,
+                short_code=short_code,
+                short_url=short_url,
+                provider=provider,
+                clicks=0,
+                created_at=created_at
+            ))
+            success_count += 1
+            
+        except Exception as e:
+            error_count += 1
+            continue
+    
+    return ShortlinkCreateResponse(
+        results=results,
+        success_count=success_count,
+        error_count=error_count
+    )
 
 @api_router.get("/shortlinks", response_model=List[Shortlink])
 async def get_shortlinks():
