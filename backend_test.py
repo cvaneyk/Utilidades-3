@@ -338,6 +338,49 @@ class E1UtilitySuiteTester:
         
         return success
 
+    def test_image_converter(self):
+        """Test WebP image conversion with 75% quality"""
+        # Create a simple test image data (1x1 PNG)
+        # Base64 of a 1x1 red pixel PNG
+        test_image_b64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+        test_image_bytes = base64.b64decode(test_image_b64)
+        
+        # For requests, we need to create a file-like object
+        import io
+        image_file = io.BytesIO(test_image_bytes)
+        
+        files = {'files': ('test.png', image_file, 'image/png')}
+        
+        success, response = self.run_test(
+            "Convert Image to WebP",
+            "POST",
+            "images/convert-to-webp",
+            200,
+            files=files
+        )
+        
+        if success and response:
+            if 'images' not in response:
+                print("❌ Missing 'images' array in WebP conversion response")
+                return False
+            if len(response['images']) == 0:
+                print("❌ No images in WebP conversion response")
+                return False
+            
+            image_result = response['images'][0]
+            if not image_result.get('success'):
+                print(f"❌ WebP conversion failed: {image_result.get('error')}")
+                return False
+            
+            if 'webp_base64' not in image_result:
+                print("❌ Missing webp_base64 in successful conversion")
+                return False
+            
+            print(f"✅ WebP conversion successful: {image_result.get('new_name')}")
+            print(f"   Size: {image_result.get('size_bytes')} bytes")
+        
+        return success
+
     def test_base64(self):
         """Test Base64 encoding/decoding"""
         test_text = "Hello, World! This is a test string."
