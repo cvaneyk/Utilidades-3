@@ -216,7 +216,7 @@ export default function TextToHTML() {
   };
 
   const loadSample = () => {
-    editor?.commands.setContent(`
+    const sampleContent = `
       <h1>Título Principal</h1>
       <p>Este es un párrafo con <strong>texto en negrita</strong> y <em>texto en cursiva</em>.</p>
       <h2>Subtítulo</h2>
@@ -232,7 +232,9 @@ export default function TextToHTML() {
       </ol>
       <blockquote>Esta es una cita destacada.</blockquote>
       <p>Y aquí hay un <a href="https://ejemplo.com">enlace</a>.</p>
-    `);
+    `;
+    editor?.commands.setContent(sampleContent);
+    setHtmlOutput(sampleContent);
   };
 
   return (
