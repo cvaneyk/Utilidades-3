@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
@@ -172,6 +172,7 @@ const MenuBar = ({ editor }) => {
 
 export default function TextToHTML() {
   const [viewMode, setViewMode] = useState("code");
+  const [htmlOutput, setHtmlOutput] = useState("<p>Escribe aquí tu contenido...</p>");
 
   const editor = useEditor({
     extensions: [
@@ -190,10 +191,19 @@ export default function TextToHTML() {
         class: "prose prose-invert max-w-none min-h-[300px] p-4 focus:outline-none",
       },
     },
+    onUpdate: ({ editor }) => {
+      setHtmlOutput(editor.getHTML());
+    },
   });
 
+  useEffect(() => {
+    if (editor) {
+      setHtmlOutput(editor.getHTML());
+    }
+  }, [editor]);
+
   const getHTML = () => {
-    return editor?.getHTML() || "";
+    return htmlOutput;
   };
 
   const copyHTML = async () => {
