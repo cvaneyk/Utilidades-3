@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import config from "@/config";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = config.API_URL;
 
 export default function Base64Tool() {
   const [input, setInput] = useState("");
@@ -27,7 +28,7 @@ export default function Base64Tool() {
         text: input,
         operation
       });
-      
+
       if (response.data.success) {
         setOutput(response.data.result);
         toast.success(`${operation === "encode" ? "Encoded" : "Decoded"} successfully!`);
@@ -97,9 +98,9 @@ export default function Base64Tool() {
               <CardTitle className="text-lg">
                 {operation === "encode" ? "Plain Text" : "Base64 String"}
               </CardTitle>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={clearAll}
                 data-testid="clear-all-btn"
               >
@@ -112,8 +113,8 @@ export default function Base64Tool() {
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={operation === "encode" 
-                ? "Enter plain text to encode..." 
+              placeholder={operation === "encode"
+                ? "Enter plain text to encode..."
                 : "Enter Base64 string to decode..."
               }
               className="min-h-[150px] bg-black/20 border-white/10 font-mono"
@@ -123,7 +124,7 @@ export default function Base64Tool() {
               onClick={processBase64}
               disabled={loading}
               className="w-full h-12 text-lg font-semibold"
-              style={{ 
+              style={{
                 background: "linear-gradient(135deg, hsl(85 70% 50%), hsl(142 76% 55%))",
                 boxShadow: "0 0 20px -5px hsl(85 70% 50% / 0.4)"
               }}
@@ -137,8 +138,8 @@ export default function Base64Tool() {
         {/* Swap Button */}
         {output && (
           <div className="flex justify-center">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={swapValues}
               className="rounded-full"
               data-testid="swap-btn"
@@ -156,9 +157,9 @@ export default function Base64Tool() {
               <CardTitle className="text-lg">
                 {operation === "encode" ? "Base64 Result" : "Decoded Text"}
               </CardTitle>
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={copyOutput}
                 disabled={!output}
                 data-testid="copy-output-btn"
@@ -170,7 +171,7 @@ export default function Base64Tool() {
           </CardHeader>
           <CardContent>
             {output ? (
-              <div 
+              <div
                 className="code-preview min-h-[150px] max-h-[300px] overflow-auto"
                 data-testid="base64-output"
               >

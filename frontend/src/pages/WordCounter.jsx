@@ -3,8 +3,9 @@ import axios from "axios";
 import { Type, Clock, FileText, Hash, AlignLeft, LetterText } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import config from "@/config";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = config.API_URL;
 
 export default function WordCounter() {
   const [text, setText] = useState("");
@@ -56,39 +57,39 @@ export default function WordCounter() {
   };
 
   const statItems = [
-    { 
-      label: "Words", 
-      value: stats.words, 
+    {
+      label: "Words",
+      value: stats.words,
       icon: FileText,
       color: "text-primary"
     },
-    { 
-      label: "Characters", 
-      value: stats.characters, 
+    {
+      label: "Characters",
+      value: stats.characters,
       icon: Hash,
       color: "text-accent"
     },
-    { 
-      label: "No Spaces", 
-      value: stats.characters_no_spaces, 
+    {
+      label: "No Spaces",
+      value: stats.characters_no_spaces,
       icon: LetterText,
       color: "text-secondary"
     },
-    { 
-      label: "Sentences", 
-      value: stats.sentences, 
+    {
+      label: "Sentences",
+      value: stats.sentences,
       icon: AlignLeft,
       color: "text-orange-500"
     },
-    { 
-      label: "Paragraphs", 
-      value: stats.paragraphs, 
+    {
+      label: "Paragraphs",
+      value: stats.paragraphs,
       icon: Type,
       color: "text-cyan-500"
     },
-    { 
-      label: "Reading Time", 
-      value: formatReadingTime(stats.reading_time_minutes), 
+    {
+      label: "Reading Time",
+      value: formatReadingTime(stats.reading_time_minutes),
       icon: Clock,
       color: "text-pink-500"
     }
@@ -134,7 +135,7 @@ export default function WordCounter() {
             <CardContent>
               <div className="grid grid-cols-2 gap-3">
                 {statItems.map((item) => (
-                  <div 
+                  <div
                     key={item.label}
                     className="bg-muted/30 rounded-xl p-4 text-center"
                     data-testid={`stat-${item.label.toLowerCase().replace(" ", "-")}`}

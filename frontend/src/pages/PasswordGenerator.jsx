@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
+import config from "@/config";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = config.API_URL;
 
 export default function PasswordGenerator() {
   const [password, setPassword] = useState("");
@@ -99,7 +100,7 @@ export default function PasswordGenerator() {
         {/* Password Display */}
         <Card className="bg-card/40 backdrop-blur-md border-white/5">
           <CardContent className="p-6">
-            <div 
+            <div
               className="password-display mb-4 relative group"
               data-testid="password-display"
             >
@@ -111,15 +112,14 @@ export default function PasswordGenerator() {
               <div className="mb-6">
                 <div className="flex justify-between text-sm mb-2">
                   <span className="text-muted-foreground">Strength</span>
-                  <span className={`font-medium capitalize ${
-                    strength === "strong" ? "text-primary" :
-                    strength === "medium" ? "text-yellow-500" : "text-destructive"
-                  }`}>
+                  <span className={`font-medium capitalize ${strength === "strong" ? "text-primary" :
+                      strength === "medium" ? "text-yellow-500" : "text-destructive"
+                    }`}>
                     {strength}
                   </span>
                 </div>
                 <div className="strength-meter">
-                  <div 
+                  <div
                     className={`strength-meter-fill ${getStrengthColor()}`}
                     style={{ width: getStrengthWidth() }}
                     data-testid="strength-meter"
@@ -133,7 +133,7 @@ export default function PasswordGenerator() {
                 onClick={generatePassword}
                 disabled={loading}
                 className="flex-1 h-12 font-semibold"
-                style={{ 
+                style={{
                   background: "linear-gradient(135deg, hsl(350 80% 55%), hsl(330 80% 55%))",
                   boxShadow: "0 0 20px -5px hsl(350 80% 55% / 0.4)"
                 }}

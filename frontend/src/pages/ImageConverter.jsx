@@ -7,8 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import config from "@/config";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = config.API_URL;
 
 export default function ImageConverter() {
   const [files, setFiles] = useState([]);
@@ -29,27 +30,27 @@ export default function ImageConverter() {
   const handleDrop = useCallback((e) => {
     e.preventDefault();
     setDragging(false);
-    
+
     const droppedFiles = Array.from(e.dataTransfer.files).filter(
       file => file.type.startsWith("image/")
     );
-    
+
     if (droppedFiles.length + files.length > 10) {
       toast.error("Maximum 10 images allowed");
       return;
     }
-    
+
     setFiles(prev => [...prev, ...droppedFiles]);
   }, [files.length]);
 
   const handleFileSelect = (e) => {
     const selectedFiles = Array.from(e.target.files || []);
-    
+
     if (selectedFiles.length + files.length > 10) {
       toast.error("Maximum 10 images allowed");
       return;
     }
-    
+
     setFiles(prev => [...prev, ...selectedFiles]);
   };
 
@@ -79,7 +80,7 @@ export default function ImageConverter() {
       });
 
       setConvertedImages(response.data.images);
-      
+
       const successCount = response.data.images.filter(img => img.success).length;
       if (successCount === files.length) {
         toast.success(`All ${successCount} images converted!`);
@@ -197,7 +198,7 @@ export default function ImageConverter() {
             </CardHeader>
             <CardContent className="space-y-2">
               {files.map((file, index) => (
-                <div 
+                <div
                   key={index}
                   className="file-item"
                   data-testid={`file-item-${index}`}
@@ -223,7 +224,7 @@ export default function ImageConverter() {
                   </Button>
                 </div>
               ))}
-              
+
               <Button
                 onClick={convertImages}
                 disabled={loading}
@@ -258,7 +259,7 @@ export default function ImageConverter() {
             </CardHeader>
             <CardContent className="space-y-2">
               {convertedImages.map((img, index) => (
-                <div 
+                <div
                   key={index}
                   className={`file-item ${img.success ? "success" : "error"}`}
                   data-testid={`result-item-${index}`}

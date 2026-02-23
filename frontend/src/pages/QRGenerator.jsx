@@ -11,8 +11,9 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import config from "@/config";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = config.API_URL;
 
 export default function QRGenerator() {
   const [items, setItems] = useState([{ content: "", content_type: "url" }]);
@@ -81,7 +82,7 @@ export default function QRGenerator() {
         size: size,
         use_isgd: useIsgd
       });
-      
+
       setResults(response.data.results);
       const successCount = response.data.results.filter(r => r.success).length;
       toast.success(`${successCount} QR code(s) generado(s)!`);
@@ -174,9 +175,9 @@ export default function QRGenerator() {
         onChange={(e) => updateItem(index, "content", e.target.value)}
         placeholder={
           item.content_type === "url" ? "https://ejemplo.com" :
-          item.content_type === "email" ? "correo@ejemplo.com" :
-          item.content_type === "phone" ? "+34612345678" :
-          "Escribe tu texto..."
+            item.content_type === "email" ? "correo@ejemplo.com" :
+              item.content_type === "phone" ? "+34612345678" :
+                "Escribe tu texto..."
         }
         className="h-11 bg-black/20 border-white/10"
       />
@@ -223,9 +224,9 @@ export default function QRGenerator() {
                     </Button>
                   )}
                 </div>
-                
-                <Tabs 
-                  value={item.content_type} 
+
+                <Tabs
+                  value={item.content_type}
                   onValueChange={(v) => updateItem(index, "content_type", v)}
                 >
                   <TabsList className="grid grid-cols-5 bg-muted/50 h-9">
@@ -317,8 +318,8 @@ export default function QRGenerator() {
               </div>
             </div>
 
-            <Button 
-              onClick={generateQRCodes} 
+            <Button
+              onClick={generateQRCodes}
               disabled={loading}
               className="w-full h-12 text-lg font-semibold glow-primary"
               data-testid="generate-qr-btn"
@@ -352,18 +353,18 @@ export default function QRGenerator() {
             {results.length > 0 ? (
               <div className="grid grid-cols-2 gap-4">
                 {results.map((result, index) => (
-                  <div 
+                  <div
                     key={index}
                     className={`p-4 rounded-xl text-center ${result.success ? "bg-muted/30" : "bg-destructive/10"}`}
                     data-testid={`qr-result-${index}`}
                   >
                     {result.success ? (
                       <>
-                        <div 
+                        <div
                           className="inline-block p-2 rounded-lg mb-2"
                           style={{ backgroundColor: bgColor }}
                         >
-                          <img 
+                          <img
                             src={`data:image/png;base64,${result.image_base64}`}
                             alt={`QR Code ${index + 1}`}
                             className="w-full max-w-[150px]"
@@ -372,8 +373,8 @@ export default function QRGenerator() {
                         <p className="text-xs text-muted-foreground truncate mb-2" title={result.final_content}>
                           {result.final_content.substring(0, 30)}...
                         </p>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => downloadSingle(result, index)}
                         >

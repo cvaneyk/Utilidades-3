@@ -8,8 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import config from "@/config";
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const API = config.API_URL;
 
 export default function Shortlinks() {
   const [urlsText, setUrlsText] = useState("");
@@ -53,11 +54,11 @@ export default function Shortlinks() {
         urls,
         use_isgd: useIsgd
       });
-      
+
       // Add new shortlinks to the top of the list
       setShortlinks([...response.data.results, ...shortlinks]);
       setUrlsText("");
-      
+
       if (response.data.error_count > 0) {
         toast.warning(`${response.data.success_count} creados, ${response.data.error_count} errores`);
       } else {
@@ -81,7 +82,7 @@ export default function Shortlinks() {
   };
 
   const copyShortlink = async (link) => {
-    const urlToCopy = link.short_url || `${process.env.REACT_APP_BACKEND_URL}/api/shortlinks/${link.short_code}`;
+    const urlToCopy = link.short_url || `${config.API_URL}/shortlinks/${link.short_code}`;
     try {
       await navigator.clipboard.writeText(urlToCopy);
       toast.success("Copiado al portapapeles!");
@@ -154,8 +155,8 @@ https://ejemplo.com/pagina-muy-larga-3`}
               />
             </div>
 
-            <Button 
-              onClick={createShortlinks} 
+            <Button
+              onClick={createShortlinks}
               disabled={loading}
               className="w-full h-12 text-lg font-semibold glow-accent"
               style={{ "--tw-shadow-color": "hsl(190 90% 60% / 0.3)" }}
@@ -193,7 +194,7 @@ https://ejemplo.com/pagina-muy-larga-3`}
             ) : (
               <div className="space-y-3">
                 {shortlinks.map((link) => (
-                  <div 
+                  <div
                     key={link.id}
                     className="p-4 bg-muted/30 rounded-xl border border-white/5 hover:border-white/10 transition-colors"
                     data-testid={`shortlink-item-${link.short_code}`}
@@ -201,14 +202,14 @@ https://ejemplo.com/pagina-muy-larga-3`}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <span 
-                            className="shortlink-url truncate cursor-pointer hover:text-primary transition-colors" 
+                          <span
+                            className="shortlink-url truncate cursor-pointer hover:text-primary transition-colors"
                             onClick={() => copyShortlink(link)}
                             title="Click para copiar"
                           >
                             {getDisplayUrl(link)}
                           </span>
-                          <Badge 
+                          <Badge
                             variant={link.provider === "isgd" ? "default" : "secondary"}
                             className="text-xs"
                           >
@@ -241,9 +242,9 @@ https://ejemplo.com/pagina-muy-larga-3`}
                           asChild
                           title="Visitar original"
                         >
-                          <a 
-                            href={link.original_url} 
-                            target="_blank" 
+                          <a
+                            href={link.original_url}
+                            target="_blank"
                             rel="noopener noreferrer"
                           >
                             <ExternalLink className="w-4 h-4" />
