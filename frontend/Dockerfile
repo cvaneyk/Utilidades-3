@@ -28,17 +28,9 @@ COPY --from=builder /app/build /usr/share/nginx/html
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Create the entrypoint script inline (avoids build context file dependency)
-RUN printf '#!/bin/sh\n\
-    # Generate runtime environment config for the React app\n\
-    cat > /usr/share/nginx/html/env-config.js <<ENVEOF\n\
-    window._env_ = {\n\
-    REACT_APP_BACKEND_URL: "${REACT_APP_BACKEND_URL}"\n\
-    };\n\
-    ENVEOF\n\
-    echo "Generated env-config.js with REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}"\n\
-    exec nginx -g "daemon off;"\n\
-    ' > /entrypoint.sh && chmod +x /entrypoint.sh
+# Create a simple entrypoint script using printf (no heredoc, no quoting issues)
+RUN printf '#!/bin/sh\nprintf "window._env_ = { REACT_APP_BACKEND_URL: \\"%s\\" };\\n" "$REACT_APP_BACKEND_URL" > /usr/share/nginx/html/env-config.js\nexec nginx -g "daemon off;"\n' > /entrypoint.sh \
+    && chmod +x /entrypoint.sh
 
 # Expose port
 EXPOSE 80
