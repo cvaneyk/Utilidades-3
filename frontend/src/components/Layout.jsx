@@ -48,7 +48,7 @@ export default function Layout() {
               <Zap className="w-6 h-6 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-bold text-lg tracking-tight">E1 Utility</h1>
+              <h1 className="font-bold text-lg tracking-tight">CV Utilities</h1>
               <p className="text-xs text-muted-foreground">Suite</p>
             </div>
           </NavLink>
@@ -86,7 +86,7 @@ export default function Layout() {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
               <Zap className="w-4 h-4 text-primary-foreground" />
             </div>
-            <span className="font-bold">E1 Utility</span>
+            <span className="font-bold">CV Utilities</span>
           </NavLink>
           <Button
             variant="ghost"
@@ -118,7 +118,7 @@ export default function Layout() {
               <Zap className="w-6 h-6 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="font-bold text-lg tracking-tight">E1 Utility</h1>
+              <h1 className="font-bold text-lg tracking-tight">CV Utilities</h1>
               <p className="text-xs text-muted-foreground">Suite</p>
             </div>
           </div>
