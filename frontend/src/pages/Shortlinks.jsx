@@ -31,6 +31,21 @@ export default function Shortlinks() {
     }
   };
 
+  // Call is.gd API directly from browser (avoids server IP being flagged as spam)
+  const shortenWithIsgd = async (url) => {
+    try {
+      const params = new URLSearchParams({ format: "json", url });
+      const response = await fetch(`https://is.gd/create.php?${params}`);
+      const data = await response.json();
+      if (data.shorturl) {
+        return { success: true, short_url: data.shorturl, short_code: data.shorturl.split("/").pop() };
+      }
+      return { success: false, error: data.errormessage || "Error desconocido de is.gd" };
+    } catch {
+      return { success: false, error: "No se pudo conectar con is.gd" };
+    }
+  };
+
   const createShortlinks = async () => {
     // Parse URLs from textarea (one per line)
     const urls = urlsText
@@ -50,19 +65,74 @@ export default function Shortlinks() {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${API}/shortlinks/create`, {
-        urls,
-        use_isgd: useIsgd
-      });
+      if (useIsgd) {
+        // Call is.gd directly from the browser for each URL
+        const results = [];
+        let successCount = 0;
+        let errorCount = 0;
 
-      // Add new shortlinks to the top of the list
-      setShortlinks([...response.data.results, ...shortlinks]);
-      setUrlsText("");
+        for (const url of urls) {
+          const result = await shortenWithIsgd(url);
+          if (result.success) {
+            // Save to backend for history (use_isgd: false so it stores what we already shortened)
+            try {
+              const saveResp = await axios.post(`${API}/shortlinks/create`, {
+                urls: [result.short_url],
+                use_isgd: false
+              });
+              // Override the saved entry with correct data
+              if (saveResp.data.results?.length > 0) {
+                const saved = saveResp.data.results[0];
+                results.push({
+                  ...saved,
+                  original_url: url,
+                  short_url: result.short_url,
+                  short_code: result.short_code,
+                  provider: "isgd"
+                });
+              }
+            } catch {
+              // Even if saving fails, show the result
+              results.push({
+                id: crypto.randomUUID(),
+                original_url: url,
+                short_url: result.short_url,
+                short_code: result.short_code,
+                provider: "isgd",
+                clicks: 0,
+                created_at: new Date().toISOString()
+              });
+            }
+            successCount++;
+          } else {
+            toast.error(`Error con ${url}: ${result.error}`);
+            errorCount++;
+          }
+        }
 
-      if (response.data.error_count > 0) {
-        toast.warning(`${response.data.success_count} creados, ${response.data.error_count} errores`);
+        setShortlinks([...results, ...shortlinks]);
+        setUrlsText("");
+
+        if (errorCount > 0) {
+          toast.warning(`${successCount} creados, ${errorCount} errores`);
+        } else {
+          toast.success(`${successCount} shortlink(s) creados!`);
+        }
       } else {
-        toast.success(`${response.data.success_count} shortlink(s) creados!`);
+        // Local shortlinks through backend
+        const response = await axios.post(`${API}/shortlinks/create`, {
+          urls,
+          use_isgd: false
+        });
+
+        setShortlinks([...response.data.results, ...shortlinks]);
+        setUrlsText("");
+
+        if (response.data.error_count > 0) {
+          toast.warning(`${response.data.success_count} creados, ${response.data.error_count} errores`);
+        } else {
+          toast.success(`${response.data.success_count} shortlink(s) creados!`);
+        }
       }
     } catch (error) {
       toast.error(error.response?.data?.detail || "Error al crear shortlinks");
@@ -70,6 +140,7 @@ export default function Shortlinks() {
       setLoading(false);
     }
   };
+
 
   const deleteShortlink = async (id) => {
     try {
