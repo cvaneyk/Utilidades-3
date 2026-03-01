@@ -12,8 +12,8 @@ RUN yarn install --frozen-lockfile
 # Copy source code
 COPY . .
 
-# Build argument with default value - works even without Easypanel build args configured
-ARG REACT_APP_BACKEND_URL=https://app-backend.2fus23.easypanel.host
+# Build argument - empty means API calls go to same origin (proxied by nginx to backend)
+ARG REACT_APP_BACKEND_URL=
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
 
 # Reduce memory usage: disable source maps and limit Node heap to 512MB
