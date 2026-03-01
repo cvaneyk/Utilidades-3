@@ -9,7 +9,7 @@
 /coverage
 
 # production
-/build
+# /build  <-- removed: build/ is now committed for Easypanel pre-built deployment
 
 # misc
 .DS_Store

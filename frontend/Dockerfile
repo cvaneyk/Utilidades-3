@@ -1,38 +1,12 @@
-# Build stage
-FROM node:20-alpine AS builder
-
-WORKDIR /app
-
-# Copy package files
-COPY package.json yarn.lock ./
-
-# Install dependencies
-RUN yarn install --frozen-lockfile
-
-# Copy source code
-COPY . .
-
-# Build argument - empty means API calls go to same origin (proxied by nginx to backend)
-ARG REACT_APP_BACKEND_URL=
-ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
-
-# Reduce memory usage: disable source maps and limit Node heap to 1024MB
-ENV GENERATE_SOURCEMAP=false
-ENV NODE_OPTIONS=--max-old-space-size=1024
-
-# Build the application
-RUN yarn build
-
-# Production stage
+# Simple deployment - no build step needed, app is pre-built locally
+# Just copy the pre-built static files into nginx
 FROM nginx:alpine
 
-# Copy built files
-COPY --from=builder /app/build /usr/share/nginx/html
+# Copy pre-built React app
+COPY build/ /usr/share/nginx/html/
 
-# Copy nginx configuration
+# Copy nginx configuration (includes /api/ reverse proxy to backend)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]
