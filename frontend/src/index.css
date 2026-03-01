@@ -38,19 +38,25 @@
     * {
         @apply border-border;
     }
-    
+
     body {
         @apply bg-background text-foreground;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
     }
-    
-    h1, h2, h3, h4, h5, h6 {
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
         font-family: 'Outfit', sans-serif;
     }
-    
-    code, pre {
+
+    code,
+    pre {
         font-family: 'JetBrains Mono', monospace;
     }
 }
@@ -108,7 +114,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
     opacity: 0;
     transition: opacity 0.3s;
 }
@@ -119,9 +125,12 @@
 
 /* Animated gradient border */
 @keyframes gradient-shift {
-    0%, 100% {
+
+    0%,
+    100% {
         background-position: 0% 50%;
     }
+
     50% {
         background-position: 100% 50%;
     }
@@ -162,9 +171,12 @@
 
 /* Pulse animation for active elements */
 @keyframes pulse-glow {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 0 15px -3px hsl(142 76% 55% / 0.4);
     }
+
     50% {
         box-shadow: 0 0 25px -3px hsl(142 76% 55% / 0.6);
     }
@@ -230,4 +242,129 @@ textarea:focus-visible {
 /* Debug wrapper fix */
 [data-debug-wrapper="true"] {
     display: contents !important;
+}
+
+/* ============================================
+   Tiptap WYSIWYG Editor - Prose Styles
+   Tailwind preflight resets list styles,
+   so we need to restore them explicitly here.
+   ============================================ */
+
+.ProseMirror {
+    outline: none;
+}
+
+/* Unordered lists - bullet points */
+.ProseMirror ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin: 0.75rem 0;
+}
+
+/* Ordered lists - numbers */
+.ProseMirror ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+    margin: 0.75rem 0;
+}
+
+.ProseMirror li {
+    margin: 0.25rem 0;
+    padding-left: 0.25rem;
+}
+
+/* Nested lists */
+.ProseMirror ul ul {
+    list-style-type: circle;
+}
+
+.ProseMirror ul ul ul {
+    list-style-type: square;
+}
+
+.ProseMirror ol ol {
+    list-style-type: lower-alpha;
+}
+
+/* Headings */
+.ProseMirror h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin: 1rem 0 0.5rem;
+    line-height: 1.2;
+}
+
+.ProseMirror h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0.875rem 0 0.5rem;
+    line-height: 1.3;
+}
+
+.ProseMirror h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0.75rem 0 0.4rem;
+}
+
+/* Paragraphs */
+.ProseMirror p {
+    margin: 0.5rem 0;
+    line-height: 1.6;
+}
+
+/* Blockquote */
+.ProseMirror blockquote {
+    border-left: 3px solid hsl(var(--accent));
+    padding-left: 1rem;
+    margin: 0.75rem 0;
+    color: hsl(var(--muted-foreground));
+    font-style: italic;
+}
+
+/* Inline code */
+.ProseMirror code {
+    background: hsl(var(--muted));
+    border-radius: 0.25rem;
+    padding: 0.1rem 0.35rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875em;
+}
+
+/* Code block */
+.ProseMirror pre {
+    background: hsl(var(--muted));
+    border-radius: 0.5rem;
+    padding: 0.85rem 1rem;
+    margin: 0.75rem 0;
+    overflow-x: auto;
+}
+
+.ProseMirror pre code {
+    background: none;
+    padding: 0;
+    font-size: 0.85rem;
+}
+
+/* Links */
+.ProseMirror a {
+    color: hsl(var(--accent));
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* Horizontal rule */
+.ProseMirror hr {
+    border: none;
+    border-top: 1px solid hsl(var(--border));
+    margin: 1rem 0;
+}
+
+/* Placeholder text when editor is empty */
+.ProseMirror p.is-editor-empty:first-child::before {
+    color: hsl(var(--muted-foreground));
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
 }

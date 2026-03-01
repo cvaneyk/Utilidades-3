@@ -1,11 +1,11 @@
 import { Outlet, NavLink, useLocation } from "react-router-dom";
-import { 
-  QrCode, 
-  Link2, 
-  Image, 
-  FileCode, 
-  Key, 
-  Type, 
+import {
+  QrCode,
+  Link2,
+  Image,
+  FileCode,
+  Key,
+  Type,
   Binary,
   Home,
   Zap,
@@ -53,7 +53,7 @@ export default function Layout() {
             </div>
           </NavLink>
         </div>
-        
+
         <ScrollArea className="flex-1">
           <nav className="p-4 space-y-1">
             {navItems.map((item) => (
@@ -71,7 +71,7 @@ export default function Layout() {
             ))}
           </nav>
         </ScrollArea>
-        
+
         <div className="p-4 border-t border-white/5">
           <div className="text-xs text-muted-foreground text-center">
             11 herramientas disponibles
@@ -101,17 +101,16 @@ export default function Layout() {
 
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Mobile Sidebar */}
-      <aside 
-        className={`lg:hidden fixed top-0 left-0 h-full w-64 bg-card border-r border-white/10 z-50 transform transition-transform duration-300 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+      <aside
+        className={`lg:hidden fixed top-0 left-0 h-full w-64 bg-card border-r border-white/10 z-50 transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="p-6 border-b border-white/5">
           <div className="flex items-center gap-3">
@@ -124,7 +123,7 @@ export default function Layout() {
             </div>
           </div>
         </div>
-        
+
         <ScrollArea className="h-[calc(100vh-88px)]">
           <nav className="p-4 space-y-1">
             {navItems.map((item) => (
@@ -145,7 +144,7 @@ export default function Layout() {
       </aside>
 
       {/* Main Content */}
-      <main className="main-content pt-20 lg:pt-0">
+      <main className="main-content pt-[60px] lg:pt-0">
         <div className="max-w-7xl mx-auto">
           <Outlet />
         </div>
