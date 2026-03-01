@@ -136,7 +136,7 @@ export default function ImageConverter() {
 
   return (
     <div className="animate-in space-y-6">
-      <div className="flex items-center gap-3 mb-8">
+      <div className="flex items-center gap-3 mb-8 mt-8">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-secondary to-purple-400 flex items-center justify-center">
           <Image className="w-6 h-6 text-white" />
         </div>
