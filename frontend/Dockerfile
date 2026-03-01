@@ -16,9 +16,9 @@ COPY . .
 ARG REACT_APP_BACKEND_URL=
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
 
-# Reduce memory usage: disable source maps and limit Node heap to 512MB
+# Reduce memory usage: disable source maps and limit Node heap to 1024MB
 ENV GENERATE_SOURCEMAP=false
-ENV NODE_OPTIONS=--max-old-space-size=512
+ENV NODE_OPTIONS=--max-old-space-size=1024
 
 # Build the application
 RUN yarn build
