@@ -16,6 +16,10 @@ COPY . .
 ARG REACT_APP_BACKEND_URL=https://app-backend.2fus23.easypanel.host
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
 
+# Reduce memory usage: disable source maps and limit Node heap to 512MB
+ENV GENERATE_SOURCEMAP=false
+ENV NODE_OPTIONS=--max-old-space-size=512
+
 # Build the application
 RUN yarn build
 
