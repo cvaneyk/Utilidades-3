@@ -12,8 +12,8 @@ RUN yarn install --frozen-lockfile
 # Copy source code
 COPY . .
 
-# Build argument for backend URL (build-time fallback)
-ARG REACT_APP_BACKEND_URL
+# Build argument with default value - works even without Easypanel build args configured
+ARG REACT_APP_BACKEND_URL=https://app-backend.2fus23.easypanel.host
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
 
 # Build the application
@@ -28,10 +28,6 @@ COPY --from=builder /app/build /usr/share/nginx/html
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Create a simple entrypoint script using printf (no heredoc, no quoting issues)
-RUN printf '#!/bin/sh\nprintf "window._env_ = { REACT_APP_BACKEND_URL: \\"%s\\" };\\n" "$REACT_APP_BACKEND_URL" > /usr/share/nginx/html/env-config.js\nexec nginx -g "daemon off;"\n' > /entrypoint.sh \
-    && chmod +x /entrypoint.sh
-
 # Expose port
 EXPOSE 80
 
@@ -39,5 +35,4 @@ EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1
 
-# Use entrypoint to inject env vars at runtime, then start nginx
-CMD ["/entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
